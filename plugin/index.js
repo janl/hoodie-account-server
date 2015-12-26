@@ -22,11 +22,11 @@ function hapiAccount (server, options, next) {
 
   var users = getApi({
     db: options.usersDb,
-    secret: options.secret,
+    secret: options.config.db.secret,
     sessionTimeout: routeOptions.sessionTimeout
   })
   routeOptions.admins = options.usersDb.admins({
-    secret: options.secret,
+    secret: options.config.db.secret,
     admins: options.admins,
     sessionTimeout: routeOptions.sessionTimeout
   })

@@ -72,7 +72,8 @@ function sessionRoutes (server, options, next) {
 
       .catch(function (error) {
         error = errors.parse(error)
-        reply(Boom.create(error.status, error.message))
+        // reply(Boom.create(error.status, error.message))
+        reply(error)
       })
     }
   }
@@ -121,7 +122,9 @@ function sessionRoutes (server, options, next) {
 
       .catch(function (error) {
         error = errors.parse(error)
-        reply(Boom.create(error.status, error.message))
+        // reply(Boom.create(error.status, error.message))
+
+        reply(error)
       })
     }
   }
