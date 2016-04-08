@@ -22,6 +22,7 @@ function sessionRoutes (server, options, next) {
     method: 'PUT',
     path: '/session',
     config: {
+      pre: options.pre,
       auth: false,
       validate: {
         headers: validations.bearerTokenHeaderForbidden,
@@ -33,6 +34,8 @@ function sessionRoutes (server, options, next) {
     handler: function (request, reply) {
       var username = request.payload.data.attributes.username
       var password = request.payload.data.attributes.password
+      console.log(username)
+      console.log(password)
       var query = request.query
 
       // check for admin. If not found, check for user
@@ -53,12 +56,14 @@ function sessionRoutes (server, options, next) {
       })
 
       .catch(function (error) {
+        console.log('validate error')
+        console.log(error)
         if (error.name === 'not_found') {
           return sessions.add({
             username: username,
             password: password,
             include: query.include
-          }, options)
+          }, options, request)
           .catch(function (error) {
             if (error.status === 404) {
               throw errors.INVALID_CREDENTIALS

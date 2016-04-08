@@ -6,17 +6,21 @@ var errors = require('../utils/errors')
 var validatePassword = require('../utils/validate-password')
 var toAccount = require('../utils/doc-to-account')
 
-function addSession (state, options) {
-  return state.db.get('org.couchdb.user:' + options.username)
+function addSession (state, properties, options, request) {
+  var hooks = options.hooks || {}
+  var db = request.pre.usersDb
+  return db.get('org.couchdb.user:' + properties.username)
 
   .then(function (doc) {
     return new Promise(function (resolve, reject) {
       validatePassword(
-        options.password,
+        properties.password,
         doc.salt,
         doc.iterations,
         doc.derived_key,
         function (error, isCorrectPassword) {
+          console.log(error)
+          console.log(isCorrectPassword)
           if (error) {
             return reject(error)
           }
@@ -43,7 +47,7 @@ function addSession (state, options) {
     var session = {
       id: bearerToken,
       account: toAccount(doc, {
-        includeProfile: options.include === 'account.profile'
+        includeProfile: properties.include === 'account.profile'
       })
     }
 

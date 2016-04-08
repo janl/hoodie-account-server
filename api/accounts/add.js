@@ -32,7 +32,12 @@ function addAccount (state, properties, options, request) {
     doc = hooks.account.beforeAdd(doc, request)
   }
 
-  return state.db.put(doc)
+  // var db = state.db
+  // if (hooks.db && typeof hooks.db === 'function') {
+  //   db = hooks.db(request)
+  // }
+  var db = request.pre.usersDb
+  return db.put(doc)
 
   .catch(function (error) {
     if (error.status === 409) {
@@ -42,8 +47,14 @@ function addAccount (state, properties, options, request) {
   })
 
   .then(function () {
-    return toAccount(doc, {
+
+    var profile = toAccount(doc, {
       includeProfile: options.include === 'profile'
     })
+
+    // emit signup event
+    state.accountsEmitter.emit('signup', profile)
+
+    return profile
   })
 }

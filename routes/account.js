@@ -23,6 +23,7 @@ function accountRoutes (server, options, next) {
     method: 'PUT',
     path: '/session/account',
     config: {
+      pre: options.pre,
       auth: false,
       validate: {
         headers: validations.bearerTokenHeaderForbidden,

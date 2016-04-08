@@ -36,6 +36,10 @@ function hapiAccount (server, options, next) {
 
   routeOptions.notifications = options.notifications
   routeOptions.hooks = options.hooks
+  routeOptions.pre = options.pre || [function(request, reply) {
+    reply(options.usersDb)
+  }]
+
   server.expose({
     api: users
   })
